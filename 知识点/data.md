@@ -261,6 +261,9 @@ ALTER TABLE `table` ADD INDEX indexName (name,xb,age);
 - 如果业务中经常查询多列,不要试图分别基于单个列去建单列索引(因为虽然是多个单列索引,但是MySQL只能用到那个它认为似乎最有效率的单列索引),这是因为当SQL语句所查询的列,全部都出现在复合索引中,此时由于只需要查询索引块即可获得所有数据,当然比使用多个单列索引要快的多.
 
 
+#### 1.3.10 
+
+
 ### #1.4 锁
 
 
@@ -273,52 +276,113 @@ ALTER TABLE `table` ADD INDEX indexName (name,xb,age);
 
 ### #1.5 SQL
 
+#### #1.5.1 SQL语句
 
-#### #1.5.1 CHAR和VARCHAR的区别？
+- 建库
+
+
+```python
+// 创建名为students的库
+create database students;
+```
+
+- 删库
+
+```python
+// 删除名为students的库
+drop database students;
+```
+
+- 建表
+
+```python
+// 创建名为stu的表
+create table if not exists stu(
+    Sid varchar(10),
+    Sname char(10)
+);
+```
+
+- 增
+
+```python
+// 插入数据 
+insert into stu values('001','Kobe');
+```
+
+- 删
+
+```python
+// 删除数据 
+delete from stu where Sid = '002';
+```
+
+```python
+// 清空这个表数据 
+truncat table stu;
+```
+
+- 改
+
+```python
+// 修改数据 
+update stu set Sname = 'Kobe' where Sid = '008';
+```
+
+- 查
+
+```python
+// 查询数据 
+select * from stu where Sname like 'Kobe%';
+```
+
+
+
+#### #1.5.2 CHAR和VARCHAR的区别？
 
 - CHAR和VARCHAR类型在存储和检索方面有所不同
 - CHAR列长度固定为创建表时声明的长度，长度值范围是1到255
 - 当CHAR值被存储时，它们被用空格填充到特定长度，检索CHAR值时需删除尾随空格
 
 
-#### #1.5.2 主键和候选键有什么区别？
+#### #1.5.3 主键和候选键有什么区别？
 
 - 表格的每一行都由主键唯一标识,一个表只有一个主键。
 - 主键也是候选键。按照惯例，候选键可以被指定为主键，并且可以用于任何外键引用。
 
-#### 1.5.3 myisamchk是用来做什么的？
+#### 1.5.4 myisamchk是用来做什么的？
 
 它用来压缩MyISAM表，这减少了磁盘或内存使用。
 
 
-#### #1.5.4 列设置为AUTO INCREMENT时，如果在表中达到最大值，会发生什么情况？
+#### #1.5.5 列设置为AUTO INCREMENT时，如果在表中达到最大值，会发生什么情况？
 
 它会停止递增，任何进一步的插入都将产生错误，因为密钥已被使用。
 
-#### #1.5.5 怎样才能找出最后一次插入时分配了哪个自动增量？
+#### #1.5.6 怎样才能找出最后一次插入时分配了哪个自动增量？
 
 LAST_INSERT_ID将返回由Auto_increment分配的最后一个值，并且不需要指定表名称。
 
 
-#### #1.5.6 LIKE声明中的％和_是什么意思？
+#### #1.5.7 LIKE声明中的％和_是什么意思？
 
 ％对应于0个或更多字符，_只是LIKE语句中的一个字符。
 
 
-#### #1.5.7 NOW（）和CURRENT_DATE（）有什么区别？
+#### #1.5.8 NOW（）和CURRENT_DATE（）有什么区别？
 
 - NOW（）命令用于显示当前年份，月份，日期，小时，分钟和秒。
 
 - CURRENT_DATE（）仅显示当前年份，月份和日期。
 
-#### #1.5.8 什么是非标准字符串类型？
+#### #1.5.9 什么是非标准字符串类型？
 
 - TINYTEXT
 - TEXT
 - MEDIUMTEXT
 - LONGTEXT
 
-#### #1.5.9 什么是通用SQL函数？
+#### #1.5.10 什么是通用SQL函数？
 
 - CONCAT(A, B) – 连接两个字符串值以创建单个字符串输出。通常用于将两个或多个字段合并为一个字段。
 - FORMAT(X, D)- 格式化数字X到D有效数字。
@@ -330,7 +394,7 @@ LAST_INSERT_ID将返回由Auto_increment分配的最后一个值，并且不需�
 - SUBTIMES（A，B） – 确定两次之间的差异。
 - FROMDAYS（INT） – 将整数天数转换为日期值。
 
-#### #1.5.10 SQL注入漏洞产生的原因？如何防止？
+#### #1.5.11 SQL注入漏洞产生的原因？如何防止？
 
 
 > SQL注入产生的原因：程序开发过程中不注意规范书写sql语句和对特殊字符进行过滤，导致客户端可以通过全局变量POST和GET提交一些sql语句正常执行。
