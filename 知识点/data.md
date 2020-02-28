@@ -529,7 +529,31 @@ B+树，经过优化的B+树
 
 ### #1.7 分布式
 
-#### #1.7.1 MySQL主从
+#### #1.7.1 为什么要MySQL主从
+
+为了减轻服务器处理海量数据并发锁产生的性能问题,其中最主流的方案就是读写分离
+
+#### #1.7.2 MySQL读写分离流程
+
+![20200228184947-image.png](https://raw.githubusercontent.com/Coxhuang/yosoro/master/20200228184947-image.png)
+
+- MySQL主服务器对数据操作记录在二进制日志文件(Binary log)中,MySQL将事务串行的写入二进制日志文件
+- Slave从服务器将二进制日志文件(Binary log)拷贝到中继日志文件(Relay log)中,首先,Slave开启一个工作线程(I/O thread),具体如下:
+1. Slave开启一个工作线程(I/O thread),I/O线程在Master上打开一个连接
+2. 开始 binary dump process
+3. 如果 binary dump process 已经同步,它会睡眠等待master产生新的事件
+4. I/O线程将这些事件写入中继日志文件中
+5. SQL Slave thread 从中继文件读取事件,并重放其中的事件而更新Slave数据,使其与Master中的数据一致
+
+#### #1.7.3 为什么需要中继文件
+
+由于网络原因, Binary log 不可能一口气存到 I/O thread中,所以Relay log用来缓存Binary log的事件,且Relay log存储在从服务器的缓存中,开销比较小 
+
+#### #1.7.4 主从同步的有点
+
+- 主库写,从库读,降低服务器压力
+- 在从服务器进行备份,避免备份期间影响主武器,保证数据安全
+- 当主服务器出现问题时,可以切换到从服务器,提高性能
 
 
 
