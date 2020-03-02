@@ -657,6 +657,17 @@ Raft算法：假设s1(sentinel-1)最先完成客观下线，它会向其余Senti
 
 #### #2.3.1 Redis集群方案应该怎么做？都有哪些方案？
 
+![20200302135351-image.png](https://raw.githubusercontent.com/Coxhuang/yosoro/master/20200302135351-image.png)
+
+---
+
+![20200302135439-image.png](https://raw.githubusercontent.com/Coxhuang/yosoro/master/20200302135439-image.png)
+
+---
+
+![20200302135512-image.png](https://raw.githubusercontent.com/Coxhuang/yosoro/master/20200302135512-image.png)
+
+
 - Twemproxy，大概概念是，它类似于一个代理方式，使用方法和普通redis无任何区别，设置好它下属的多个redis实例后，使用时在本需要连接redis的地方改为连接twemproxy，它会以一个代理的身份接收请求并使用一致性hash算法，将请求转接到具体redis，将结果再返回twemproxy。使用方式简便(相对redis只需修改连接端口)，对旧项目扩展的首选。 问题：twemproxy自身单端口实例的压力，使用一致性hash后，对redis节点数量改变时候的计算值的改变，数据无法自动移动到新的节点。
 - Codis，目前用的最多的集群方案，基本和twemproxy一致的效果，但它支持在 节点数量改变情况下，旧节点数据可恢复到新hash节点。
 - redis cluster3.0自带的集群，特点在于他的分布式算法不是一致性hash，而是hash槽的概念，以及自身支持节点设置从节点。具体看官方文档介绍。
